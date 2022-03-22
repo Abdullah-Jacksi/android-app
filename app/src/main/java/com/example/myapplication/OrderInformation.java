@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
 
-public class orderinformation extends AppCompatActivity {
+public class OrderInformation extends AppCompatActivity {
 
 
     ArrayList<String> myList,locationList;

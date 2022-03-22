@@ -17,7 +17,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.myapplication.Model.Users;
-import com.example.myapplication.Prevalent.Prevalent;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -147,7 +146,7 @@ public class login extends AppCompatActivity {
                                 Toast.makeText(login.this, "Welcome Admin, you are logged in Successfully...", Toast.LENGTH_SHORT).show();
                                 loadingBar.dismiss();
 
-                                Intent intent = new Intent(login.this, orderinformation.class);
+                                Intent intent = new Intent(login.this, OrderInformation.class);
                                 startActivity(intent);
                             }
                             else if (parentDbName.equals("Users"))

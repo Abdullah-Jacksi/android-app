@@ -96,7 +96,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".orderinformation"
+            android:name=".OrderInformation"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

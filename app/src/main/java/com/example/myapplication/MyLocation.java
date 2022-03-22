@@ -2,13 +2,14 @@
 package com.example.myapplication;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Looper;
 import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
@@ -16,11 +17,17 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -45,18 +52,16 @@ public class MyLocation extends FragmentActivity implements OnMapReadyCallback ,
 
     ArrayList<String> myList;
     String radioValue, myEditText1Text, myEditText2Text;
-    List<String> locationList = new ArrayList<String>();
+    ArrayList<String> locationList = new ArrayList<String>();
     List<Address> addresses = new ArrayList<Address>();
 
     GoogleMap mMap;
     Geocoder geocoder;
-
-
     SupportMapFragment supportMapFragment;
-    FusedLocationProviderClient client;
     Boolean isPermissionGranted = false;
-
     FusedLocationProviderClient mLocationClient;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
+    LatLng latLng =  new LatLng(0,0);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,71 +83,113 @@ public class MyLocation extends FragmentActivity implements OnMapReadyCallback ,
 
         mLocationClient = new FusedLocationProviderClient(this);
 
-//        getCurrLoc();
 
         Next = (Button) findViewById(R.id.next);
         Next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                getCurrLoc();
+
+                if (ContextCompat.checkSelfPermission(getApplicationContext(),
+                        Manifest.permission.ACCESS_FINE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(MyLocation.this,
+                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                            LOCATION_PERMISSION_REQUEST_CODE);
+                } else {
+                    getCurrentLocation();
+                }
+
 
 //             Toast.makeText(MyLocation.this, myList.get(0) + " " + radioValue + " " + myEditText1Text + " " + myEditText2Text, Toast.LENGTH_LONG).show();
 
-//                Intent intent = new Intent(MyLocation.this, orderinformation.class);
-//
-//                intent.putExtra("myList"  , myList);
-//                intent.putExtra("locationList"  , locationList);
-//                intent.putExtra("radioValue", radioValue);
-//                intent.putExtra("myEditText1Text", myEditText1Text);
-//                intent.putExtra("myEditText2Text", myEditText2Text);
-//
-//                startActivity(intent);
+                Intent intent = new Intent(MyLocation.this, OrderInformation.class);
+
+                intent.putExtra("myList"  , myList);
+                intent.putExtra("locationList"  , locationList);
+                intent.putExtra("radioValue", radioValue);
+                intent.putExtra("myEditText1Text", myEditText1Text);
+                intent.putExtra("myEditText2Text", myEditText2Text);
+
+                startActivity(intent);
             }
         });
 
-
-
     }
 
-    @SuppressLint("MissingPermission")
-    private void getCurrLoc() {
-        mLocationClient.getLastLocation().addOnCompleteListener(task -> {
-            if(task.isSuccessful()){
-                Location location = task.getResult();
-                getoLocation(location.getLatitude(),location.getLongitude());
-
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE && grantResults.length > 0) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getCurrentLocation();
+            } else {
+                Toast.makeText(this, "Permission is denied!", Toast.LENGTH_SHORT).show();
             }
-        });
-    }
-
-
-    private void getoLocation(double latitude, double longitude)  {
-        LatLng latLng = new LatLng(latitude, longitude);
-
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng,13);
-        mMap.moveCamera(cameraUpdate);
-        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        this.mMap.addMarker(new MarkerOptions().position(latLng).title("Tutorialspoint.com"));
-        Toast.makeText(MyLocation.this, latLng.toString(), Toast.LENGTH_LONG).show();
-        locationList.add(String.valueOf(latitude));
-        locationList.add(String.valueOf(longitude));
-        geocoder = new Geocoder(this, Locale.getDefault());
-        try {
-            addresses = geocoder.getFromLocation(latitude, longitude, 1);
-            // Here 1 represent max location result to returned, by documents it recommended 1 to 5
-            String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-            String city = addresses.get(0).getLocality();
-            String state = addresses.get(0).getAdminArea();
-            String country = addresses.get(0).getCountryName();
-            String postalCode = addresses.get(0).getPostalCode();
-            String knownName = addresses.get(0).getFeatureName();
-            locationList.add(country);
-            locationList.add(state);
-            Toast.makeText(MyLocation.this,  state  + " - " + country  , Toast.LENGTH_LONG).show();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
+
+    private void getCurrentLocation() {
+//        progressBar.setVisibility(View.VISIBLE);
+        LocationRequest locationRequest = new LocationRequest();
+        locationRequest.setInterval(10000);
+        locationRequest.setFastestInterval(3000);
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        LocationServices.getFusedLocationProviderClient(MyLocation.this)
+                .requestLocationUpdates(locationRequest, new LocationCallback() {
+
+                    @Override
+                    public void onLocationResult(LocationResult locationResult) {
+                        super.onLocationResult(locationResult);
+                        LocationServices.getFusedLocationProviderClient(getApplicationContext())
+                                .removeLocationUpdates(this);
+                        if (locationResult != null && locationResult.getLocations().size() > 0) {
+                            int latestlocIndex = locationResult.getLocations().size() - 1;
+                            double lati = locationResult.getLocations().get(latestlocIndex).getLatitude();
+                            double longi = locationResult.getLocations().get(latestlocIndex).getLongitude();
+//                            textLatLong.setText(String.format("Latitude : %s\n Longitude: %s", lati, longi));
+
+                            Location location = new Location("providerNA");
+                            location.setLongitude(longi);
+                            location.setLatitude(lati);
+//                            Toast.makeText(MyLocation.this, String.format("Latitude : %s\n Longitude: %s", lati, longi) , Toast.LENGTH_SHORT).show();
+                            geocoder = new Geocoder(MyLocation.this, Locale.getDefault());
+                            try {
+                                addresses = geocoder.getFromLocation(lati, longi, 1);
+                                String state = addresses.get(0).getAdminArea();
+                                String country = addresses.get(0).getCountryName();
+                                locationList.add(country);
+                                locationList.add(state);
+                                Toast.makeText(MyLocation.this,  state  + " - " + country  , Toast.LENGTH_LONG).show();
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+//                            getoLocation(location.getLatitude(),location.getLongitude());
+
+                            latLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+                            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng,13);
+                            mMap.moveCamera(cameraUpdate);
+                            mMap.addMarker(new MarkerOptions().position(latLng).title("my location"));
+
+                        } else {
+
+                        }
+                    }
+                }, Looper.getMainLooper());
+
+    }
+
 
     private void initMap() {
         if (isPermissionGranted) {
@@ -158,11 +205,10 @@ public class MyLocation extends FragmentActivity implements OnMapReadyCallback ,
     public void onMapReady(GoogleMap googleMap) {
         this.mMap = googleMap;
 
-//        this.mMap.setMyLocationEnabled(true);
-//        LatLng TutorialsPoint = new LatLng(21, 57);
-//        this.mMap.addMarker(new
-//                MarkerOptions().position(TutorialsPoint).title("Tutorialspoint.com"));
-//        this.mMap.moveCamera(CameraUpdateFactory.newLatLng(TutorialsPoint));
+        LatLng TutorialsPoint = new LatLng( 24.774265, 46.738586);
+        this.mMap.addMarker(new
+                MarkerOptions().position(TutorialsPoint).title("initial location"));
+        this.mMap.moveCamera(CameraUpdateFactory.newLatLng(TutorialsPoint));
     }
 
     public void checkMyPermission() {

@@ -24,7 +24,7 @@ public class welcomescreen extends AppCompatActivity {
         @Override
         public void run() {
         try {
-        sleep(7000);
+        sleep(1000);
         Intent intent = new Intent(getApplicationContext() , MyLocation.class); // introscreen1.class);
         startActivity(intent);
         finish();
