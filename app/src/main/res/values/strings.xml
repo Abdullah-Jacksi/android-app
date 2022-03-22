@@ -42,5 +42,6 @@
     <string name="menu_gallery">Gallery</string>
     <string name="title_activity_home">home</string>
     <string name="title_activity_home1">Home1Activity</string>
+    <string name="profile">profile</string>
 
 </resources>

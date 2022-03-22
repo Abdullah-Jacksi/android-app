@@ -15,7 +15,7 @@ public class items extends AppCompatActivity implements View.OnClickListener {
     Button plastic;
     Button glass;
     Button aluminum;
-    Button next;
+    Button next, profile,orderHistory;
 
     ArrayList<String> list = new ArrayList<String>();
 
@@ -48,6 +48,22 @@ public class items extends AppCompatActivity implements View.OnClickListener {
         plastic.setOnClickListener(this);
         glass.setOnClickListener(this);
         aluminum.setOnClickListener(this);
+
+        profile = findViewById(R.id.profileButton);
+        profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(items.this, ProfileActivity.class);
+                startActivity(intent);
+            }
+        });
+        orderHistory = findViewById(R.id.orderHistoryButton);
+        orderHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
     @Override
     public void onClick(View view) {
@@ -75,6 +91,7 @@ public class items extends AppCompatActivity implements View.OnClickListener {
 
         }
     }
+
 }
 
 

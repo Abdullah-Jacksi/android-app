@@ -67,7 +67,7 @@ public class OrderInformation extends AppCompatActivity {
 
                 Confirmation.setEnabled(false);
 
-                setOrderNumber();
+                getOrderNumber();
 
 //                setOrderDetails ();
 
@@ -77,7 +77,7 @@ public class OrderInformation extends AppCompatActivity {
         });
     }
 
-    void setOrderNumber() {
+    void getOrderNumber() {
         final DatabaseReference RootRef;
         RootRef = FirebaseDatabase.getInstance().getReference();
         RootRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -168,6 +168,7 @@ public class OrderInformation extends AppCompatActivity {
         }
         Toast.makeText(OrderInformation.this, String.valueOf(orderNumber), Toast.LENGTH_SHORT).show();
     }
+
 
     void updateOrderNumber() {
         final DatabaseReference RootRef;

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -35,6 +36,16 @@ public class login extends AppCompatActivity {
 
     private String parentDbName = "Users";
     FirebaseAuth fAuth;
+
+    void saveToCache(String email) {
+        sharedpreferences = getSharedPreferences("new", 0);
+        editor = sharedpreferences.edit();
+        editor.putString("logged_in", email);
+        editor.commit();
+    }
+
+    SharedPreferences sharedpreferences;
+    SharedPreferences.Editor editor;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -156,6 +167,7 @@ public class login extends AppCompatActivity {
                                 Toast.makeText(login.this, "logged in Successfully...", Toast.LENGTH_SHORT).show();
                                 loadingBar.dismiss();
 
+                                saveToCache(em);
                                 Intent intent = new Intent(login.this, items.class);
 //                                TODO: from here to show user info in info screen
 //                                Prevalent.currentOnlineUser = usersData;

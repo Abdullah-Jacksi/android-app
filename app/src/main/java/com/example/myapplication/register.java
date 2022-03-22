@@ -1,6 +1,7 @@
 package com.example.myapplication;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -23,6 +24,10 @@ public class register extends AppCompatActivity {
     private Button Register;
     private TextView AlreadyHaveAccount;
     private ProgressDialog loadingBar;
+
+    SharedPreferences sharedpreferences;
+    SharedPreferences.Editor editor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +54,14 @@ public class register extends AppCompatActivity {
             }
         });
     }
+
+    void saveToCache(String email) {
+        sharedpreferences = getSharedPreferences("new", 0);
+        editor = sharedpreferences.edit();
+            editor.putString("logged_in", email);
+            editor.commit();
+    }
+
     private void RegisterUser() {
         String user = Username.getText().toString();
         String pass = Password.getText().toString();
