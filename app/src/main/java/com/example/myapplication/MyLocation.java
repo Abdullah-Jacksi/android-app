@@ -23,7 +23,6 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationResult;
@@ -48,9 +47,11 @@ import java.util.List;
 import java.util.Locale;
 
 public class MyLocation extends FragmentActivity implements OnMapReadyCallback , GoogleApiClient.ConnectionCallbacks , GoogleApiClient.OnConnectionFailedListener { //
-    Button Next;//
+    Button Next, next2;
 
-    ArrayList<String> myList;
+    public static final String SHARED_PREFS = "sharedPrefs";
+
+    ArrayList<String> myList =  new ArrayList<String>();
     String radioValue, myEditText1Text, myEditText2Text;
     ArrayList<String> locationList = new ArrayList<String>();
     List<Address> addresses = new ArrayList<Address>();
@@ -59,14 +60,17 @@ public class MyLocation extends FragmentActivity implements OnMapReadyCallback ,
     Geocoder geocoder;
     SupportMapFragment supportMapFragment;
     Boolean isPermissionGranted = false;
-    FusedLocationProviderClient mLocationClient;
+//    FusedLocationProviderClient mLocationClient;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     LatLng latLng =  new LatLng(0,0);
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.location);
+        checkMyPermission();
+
 
         Toast.makeText(MyLocation.this, "Location and Internet must be turn on!", Toast.LENGTH_LONG).show();
 
@@ -77,18 +81,14 @@ public class MyLocation extends FragmentActivity implements OnMapReadyCallback ,
 //        myEditText2Text = bundle.getString("myEditText2Text");
 
 
-        checkMyPermission();
-
-        initMap();
-
-        mLocationClient = new FusedLocationProviderClient(this);
+//        mLocationClient = new FusedLocationProviderClient(this);
 
 
-        Next = (Button) findViewById(R.id.next);
-        Next.setOnClickListener(new View.OnClickListener() {
+        next2 = (Button) findViewById(R.id.next2);
+        next2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                next2.setText("Getting now!!!");
                 if (ContextCompat.checkSelfPermission(getApplicationContext(),
                         Manifest.permission.ACCESS_FINE_LOCATION)
                         != PackageManager.PERMISSION_GRANTED) {
@@ -98,19 +98,32 @@ public class MyLocation extends FragmentActivity implements OnMapReadyCallback ,
                 } else {
                     getCurrentLocation();
                 }
+            }
+        });
 
+        Next = (Button) findViewById(R.id.next);
+        Next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
 //             Toast.makeText(MyLocation.this, myList.get(0) + " " + radioValue + " " + myEditText1Text + " " + myEditText2Text, Toast.LENGTH_LONG).show();
+//             Toast.makeText(MyLocation.this, locationList.get(0) + " " + locationList.get(1) + " " + locationList.get(2) + " " + locationList.get(3), Toast.LENGTH_LONG).show();
 
-                Intent intent = new Intent(MyLocation.this, OrderInformation.class);
+                if(locationList.isEmpty()){
+                    Toast.makeText(MyLocation.this, "you should select your location", Toast.LENGTH_LONG).show();
 
-                intent.putExtra("myList"  , myList);
-                intent.putExtra("locationList"  , locationList);
-                intent.putExtra("radioValue", radioValue);
-                intent.putExtra("myEditText1Text", myEditText1Text);
-                intent.putExtra("myEditText2Text", myEditText2Text);
+                }else{
+                    Intent intent = new Intent(MyLocation.this, OrderInformation.class);
 
-                startActivity(intent);
+                    intent.putExtra("myList"  , myList);
+                    intent.putExtra("locationList"  , locationList);
+                    intent.putExtra("radioValue", radioValue);
+                    intent.putExtra("myEditText1Text", myEditText1Text);
+                    intent.putExtra("myEditText2Text", myEditText2Text);
+
+                    startActivity(intent);
+                }
+
             }
         });
 
@@ -162,6 +175,8 @@ public class MyLocation extends FragmentActivity implements OnMapReadyCallback ,
                             Location location = new Location("providerNA");
                             location.setLongitude(longi);
                             location.setLatitude(lati);
+                            locationList.add(String.valueOf(lati));
+                            locationList.add(String.valueOf(longi));
 //                            Toast.makeText(MyLocation.this, String.format("Latitude : %s\n Longitude: %s", lati, longi) , Toast.LENGTH_SHORT).show();
                             geocoder = new Geocoder(MyLocation.this, Locale.getDefault());
                             try {
@@ -181,7 +196,7 @@ public class MyLocation extends FragmentActivity implements OnMapReadyCallback ,
                             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng,13);
                             mMap.moveCamera(cameraUpdate);
                             mMap.addMarker(new MarkerOptions().position(latLng).title("my location"));
-
+                            next2.setText("Done (:");
                         } else {
 
                         }
@@ -217,6 +232,7 @@ public class MyLocation extends FragmentActivity implements OnMapReadyCallback ,
             public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
 //                Toast.makeText(MyLocation.this, "permission granted", Toast.LENGTH_LONG).show();
                 isPermissionGranted = true;
+                initMap();
             }
 
             @Override

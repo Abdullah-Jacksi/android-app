@@ -32,6 +32,7 @@ public class login extends AppCompatActivity {
     private ProgressDialog loadingBar;
     AlertDialog.Builder reset_alert;
     LayoutInflater inflater;
+
     private String parentDbName = "Users";
     FirebaseAuth fAuth;
     @Override
@@ -126,6 +127,7 @@ public class login extends AppCompatActivity {
             AllowAccessToAccount(em, pass);
         }
     }
+
     private void AllowAccessToAccount( final String em, final String pass)
     {
         final DatabaseReference RootRef;
