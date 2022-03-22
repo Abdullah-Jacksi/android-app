@@ -32,7 +32,9 @@ public class OrderInformation extends AppCompatActivity {
     SharedPreferences sharedpreferences;
     SharedPreferences.Editor editor;
 
-    int orderNumber = 0;
+    Integer orderNumber = 0;
+
+    private static final String ORDER_NUMBER = "OrderNumber";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,18 +49,6 @@ public class OrderInformation extends AppCompatActivity {
         myEditText1Text = bundle.getString("myEditText1Text");
         myEditText2Text = bundle.getString("myEditText2Text");
 
-        sharedpreferences = getSharedPreferences("new",0);
-        editor = sharedpreferences.edit();
-        if(!sharedpreferences.contains("orderNumber")){
-            Toast.makeText(OrderInformation.this, "not exist orderNumber", Toast.LENGTH_LONG).show();
-            editor.putInt("orderNumber" , 0);
-            editor.commit();
-        }else{
-            Toast.makeText(OrderInformation.this, "yes exist orderNumber", Toast.LENGTH_LONG).show();
-            orderNumber += sharedpreferences.getInt("orderNumber" , 0);
-        }
-        Toast.makeText(OrderInformation.this, String.valueOf(orderNumber), Toast.LENGTH_LONG).show();
-
 
         Confirmation = (Button) findViewById(R.id.Confirmation);
         Confirmation.setOnClickListener(new View.OnClickListener() {
@@ -68,10 +58,7 @@ public class OrderInformation extends AppCompatActivity {
 
 //                    Toast.makeText(OrderInformation.this, myList.size() + " " + radioValue + " " + myEditText1Text + " " + myEditText2Text, Toast.LENGTH_LONG).show();
 //                    Toast.makeText(OrderInformation.this, locationList.get(0) + " " + locationList.get(1) + " " + locationList.get(2) + " " + locationList.get(3), Toast.LENGTH_LONG).show();
-//                orderNumber += 1;
-//                editor.putInt("orderNumber" , orderNumber);
-//                editor.commit();
-//                Toast.makeText(OrderInformation.this, String.valueOf(orderNumber), Toast.LENGTH_LONG).show();
+
                 myList.add("paper");
                 myList.add("aluminum");
                 radioValue = "Amount";
@@ -80,46 +67,9 @@ public class OrderInformation extends AppCompatActivity {
 
                 Confirmation.setEnabled(false);
 
-                final DatabaseReference RootRef;
-                RootRef = FirebaseDatabase.getInstance().getReference();
-                RootRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                setOrderNumber();
 
-                        HashMap<String, Object> userdataMap = new HashMap<>();
-                        userdataMap.put("orderNumber", orderNumber + 1);
-                        userdataMap.put("myList", myList);
-                        userdataMap.put("locationList", locationList);
-                        userdataMap.put("radioValue", radioValue);
-                        userdataMap.put("myEditText1Text", myEditText1Text);
-                        userdataMap.put("myEditText2Text", myEditText2Text);
-                        RootRef.child("Orders").child(String.valueOf((orderNumber + 1))).updateChildren(userdataMap)
-                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful()) {
-                                            orderNumber += 1;
-                                            editor.putInt("orderNumber" , orderNumber);
-                                            editor.commit();
-
-                                            Toast.makeText(OrderInformation.this, "your order sent! ", Toast.LENGTH_SHORT).show();
-                                            Confirmation.setEnabled(true);
-                                            Intent intent = new Intent(OrderInformation.this, MyLocation.class);
-                                            startActivity(intent);
-                                        } else {
-                                            Confirmation.setEnabled(true);
-                                            Toast.makeText(OrderInformation.this, "Network Error:please try again after some time ...", Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                });
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-
+//                setOrderDetails ();
 
 //                    Intent intent = new Intent(orderinformation.this, home.class);
 //                    startActivity(intent);
@@ -127,8 +77,131 @@ public class OrderInformation extends AppCompatActivity {
         });
     }
 
-    void test (){
+    void setOrderNumber() {
+        final DatabaseReference RootRef;
+        RootRef = FirebaseDatabase.getInstance().getReference();
+        RootRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
+                if (dataSnapshot.hasChild(ORDER_NUMBER) || dataSnapshot.child(ORDER_NUMBER).exists()) {
+                    orderNumber = Integer.valueOf(String.valueOf(dataSnapshot.child(ORDER_NUMBER).child(ORDER_NUMBER).getValue()));
+                    Toast.makeText(OrderInformation.this, String.valueOf(orderNumber), Toast.LENGTH_SHORT).show();
+                    setOrderDetails();
+//                    Confirmation.setEnabled(true);
+                } else {
+                    HashMap<String, Object> orderNumberMap = new HashMap<>();
+                    orderNumberMap.put(ORDER_NUMBER, 0);
+                    RootRef.child(ORDER_NUMBER).updateChildren(orderNumberMap)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+//                                        Confirmation.setEnabled(true);
+                                        Toast.makeText(OrderInformation.this, "added new OrderNumber", Toast.LENGTH_SHORT).show();
+                                        setOrderDetails();
+                                    } else {
+
+                                        Toast.makeText(OrderInformation.this, "Network Error:please try again after some time ...", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+    }
+
+    void setOrderDetails() {
+        final DatabaseReference RootRef;
+        RootRef = FirebaseDatabase.getInstance().getReference();
+        RootRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                HashMap<String, Object> userdataMap = new HashMap<>();
+                userdataMap.put("orderNumber", orderNumber + 1);
+                userdataMap.put("myList", myList);
+                userdataMap.put("locationList", locationList);
+                userdataMap.put("radioValue", radioValue);
+                userdataMap.put("myEditText1Text", myEditText1Text);
+                userdataMap.put("myEditText2Text", myEditText2Text);
+                RootRef.child("Orders").child(String.valueOf((orderNumber + 1))).updateChildren(userdataMap)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    orderNumber += 1;
+                                    updateOrderNumber();
+
+                                } else {
+                                    Confirmation.setEnabled(true);
+                                    Toast.makeText(OrderInformation.this, "Network Error:please try again after some time ...", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+
+    void saveToCache() {
+        sharedpreferences = getSharedPreferences("new", 0);
+        editor = sharedpreferences.edit();
+        if (!sharedpreferences.contains("orderNumber")) {
+            Toast.makeText(OrderInformation.this, "not exist orderNumber", Toast.LENGTH_SHORT).show();
+            editor.putInt("orderNumber", 0);
+            editor.commit();
+        } else {
+            Toast.makeText(OrderInformation.this, "yes exist orderNumber", Toast.LENGTH_SHORT).show();
+            orderNumber += sharedpreferences.getInt("orderNumber", 0);
+        }
+        Toast.makeText(OrderInformation.this, String.valueOf(orderNumber), Toast.LENGTH_SHORT).show();
+    }
+
+    void updateOrderNumber() {
+        final DatabaseReference RootRef;
+        RootRef = FirebaseDatabase.getInstance().getReference();
+        RootRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                HashMap<String, Object> orderNumberMap = new HashMap<>();
+                orderNumberMap.put(ORDER_NUMBER, orderNumber);
+                RootRef.child(ORDER_NUMBER).updateChildren(orderNumberMap)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+//                                        Confirmation.setEnabled(true);
+//                                    Toast.makeText(OrderInformation.this, "updated OrderNumber", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(OrderInformation.this, "your order sent! ", Toast.LENGTH_SHORT).show();
+                                    Confirmation.setEnabled(true);
+                                    Intent intent = new Intent(OrderInformation.this, MyLocation.class);
+                                    startActivity(intent);
+                                } else {
+
+                                    Toast.makeText(OrderInformation.this, "Network Error:please try again after some time ...", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
 }
