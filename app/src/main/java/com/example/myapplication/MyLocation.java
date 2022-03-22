@@ -4,8 +4,9 @@ package com.example.myapplication;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationRequest;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -34,16 +35,22 @@ import com.karumi.dexter.listener.PermissionGrantedResponse;
 import com.karumi.dexter.listener.PermissionRequest;
 import com.karumi.dexter.listener.single.PermissionListener;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class MyLocation extends FragmentActivity implements OnMapReadyCallback , GoogleApiClient.ConnectionCallbacks , GoogleApiClient.OnConnectionFailedListener { //
     Button Next;//
 
     ArrayList<String> myList;
     String radioValue, myEditText1Text, myEditText2Text;
+    List<String> locationList = new ArrayList<String>();
+    List<Address> addresses = new ArrayList<Address>();
 
     GoogleMap mMap;
-    LocationRequest locationRequest;
+    Geocoder geocoder;
+
 
     SupportMapFragment supportMapFragment;
     FusedLocationProviderClient client;
@@ -56,13 +63,14 @@ public class MyLocation extends FragmentActivity implements OnMapReadyCallback ,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.location);
 
-        Toast.makeText(MyLocation.this, "Location and internet must be turn on!", Toast.LENGTH_LONG).show();
+        Toast.makeText(MyLocation.this, "Location and Internet must be turn on!", Toast.LENGTH_LONG).show();
 
 //        myList = (ArrayList<String>) getIntent().getSerializableExtra("myList");
 //        Bundle bundle = getIntent().getExtras();
 //        radioValue = bundle.getString("radioValue");
 //        myEditText1Text = bundle.getString("myEditText1Text");
 //        myEditText2Text = bundle.getString("myEditText2Text");
+
 
         checkMyPermission();
 
@@ -77,12 +85,17 @@ public class MyLocation extends FragmentActivity implements OnMapReadyCallback ,
             @Override
             public void onClick(View view) {
                 getCurrLoc();
-//                turnGPSOn();
-//                getCurrLoc();
-//                Toast.makeText(MyLocation.this, b.toString(), Toast.LENGTH_LONG).show();
 
 //             Toast.makeText(MyLocation.this, myList.get(0) + " " + radioValue + " " + myEditText1Text + " " + myEditText2Text, Toast.LENGTH_LONG).show();
-//                Intent intent = new Intent(location.this, orderinformation.class);
+
+//                Intent intent = new Intent(MyLocation.this, orderinformation.class);
+//
+//                intent.putExtra("myList"  , myList);
+//                intent.putExtra("locationList"  , locationList);
+//                intent.putExtra("radioValue", radioValue);
+//                intent.putExtra("myEditText1Text", myEditText1Text);
+//                intent.putExtra("myEditText2Text", myEditText2Text);
+//
 //                startActivity(intent);
             }
         });
@@ -97,19 +110,38 @@ public class MyLocation extends FragmentActivity implements OnMapReadyCallback ,
             if(task.isSuccessful()){
                 Location location = task.getResult();
                 getoLocation(location.getLatitude(),location.getLongitude());
+
             }
         });
     }
 
 
-    private void getoLocation(double latitude, double longitude) {
+    private void getoLocation(double latitude, double longitude)  {
         LatLng latLng = new LatLng(latitude, longitude);
 
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng,18);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng,13);
         mMap.moveCamera(cameraUpdate);
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         this.mMap.addMarker(new MarkerOptions().position(latLng).title("Tutorialspoint.com"));
         Toast.makeText(MyLocation.this, latLng.toString(), Toast.LENGTH_LONG).show();
+        locationList.add(String.valueOf(latitude));
+        locationList.add(String.valueOf(longitude));
+        geocoder = new Geocoder(this, Locale.getDefault());
+        try {
+            addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+            String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+            String city = addresses.get(0).getLocality();
+            String state = addresses.get(0).getAdminArea();
+            String country = addresses.get(0).getCountryName();
+            String postalCode = addresses.get(0).getPostalCode();
+            String knownName = addresses.get(0).getFeatureName();
+            locationList.add(country);
+            locationList.add(state);
+            Toast.makeText(MyLocation.this,  state  + " - " + country  , Toast.LENGTH_LONG).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void initMap() {
@@ -137,7 +169,7 @@ public class MyLocation extends FragmentActivity implements OnMapReadyCallback ,
         Dexter.withContext(this).withPermission(Manifest.permission.ACCESS_FINE_LOCATION).withListener(new PermissionListener() {
             @Override
             public void onPermissionGranted(PermissionGrantedResponse permissionGrantedResponse) {
-                Toast.makeText(MyLocation.this, "permission granted", Toast.LENGTH_LONG).show();
+//                Toast.makeText(MyLocation.this, "permission granted", Toast.LENGTH_LONG).show();
                 isPermissionGranted = true;
             }
 
