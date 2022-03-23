@@ -180,7 +180,7 @@
             android:layout_gravity="left|center_vertical"
             android:layout_marginBottom="15dp"
             android:layout_weight="1"
-            android:text="@string/profile"/>
+            android:text="My Profile"/>
 <!--            app:layout_constraintBottom_toBottomOf="parent"-->
 <!--            app:layout_constraintEnd_toEndOf="parent"-->
 <!--            app:layout_constraintHorizontal_bias="0.498"-->
@@ -196,14 +196,13 @@
             android:layout_gravity="center|center_horizontal|center_vertical"
             android:layout_marginBottom="15dp"
             android:layout_weight="1"
-            android:text="@string/next"/>
+            android:text="Next Page"/>
 <!--            app:layout_constraintBottom_toBottomOf="parent"-->
 <!--            app:layout_constraintEnd_toEndOf="parent"-->
 <!--            app:layout_constraintHorizontal_bias="0.498"-->
 <!--            app:layout_constraintStart_toStartOf="parent"-->
 <!--            app:layout_constraintTop_toTopOf="parent"-->
 <!--            app:layout_constraintVertical_bias="0.781"-->
-
 
         <Button
             android:id="@+id/orderHistoryButton"
@@ -212,7 +211,16 @@
             android:layout_gravity="right|center_vertical"
             android:layout_marginBottom="15dp"
             android:layout_weight="1"
-            android:text="Order History" />
+            android:text="My Orders" />
+
+        <Button
+            android:id="@+id/logOutButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:layout_marginBottom="15dp"
+            android:layout_weight="1"
+            android:text="Log out" />
         <!--            app:layout_constraintBottom_toBottomOf="parent"-->
 <!--            app:layout_constraintEnd_toEndOf="parent"-->
 <!--            app:layout_constraintHorizontal_bias="0.498"-->

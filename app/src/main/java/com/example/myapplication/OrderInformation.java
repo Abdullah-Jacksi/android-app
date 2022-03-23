@@ -33,6 +33,7 @@ public class OrderInformation extends AppCompatActivity {
     SharedPreferences.Editor editor;
 
     Integer orderNumber = 0;
+    String email = "";
 
     private static final String ORDER_NUMBER = "OrderNumber";
 
@@ -55,7 +56,6 @@ public class OrderInformation extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-
 //                    Toast.makeText(OrderInformation.this, myList.size() + " " + radioValue + " " + myEditText1Text + " " + myEditText2Text, Toast.LENGTH_LONG).show();
 //                    Toast.makeText(OrderInformation.this, locationList.get(0) + " " + locationList.get(1) + " " + locationList.get(2) + " " + locationList.get(3), Toast.LENGTH_LONG).show();
 
@@ -67,6 +67,10 @@ public class OrderInformation extends AppCompatActivity {
 
                 Confirmation.setEnabled(false);
 
+                email = getEmailFromCache ();
+
+
+//                setOrderDetails(email);
                 getOrderNumber();
 
 //                setOrderDetails ();
@@ -76,6 +80,12 @@ public class OrderInformation extends AppCompatActivity {
             }
         });
     }
+
+    String getEmailFromCache (){
+        sharedpreferences = getSharedPreferences("new", 0);
+        return sharedpreferences.getString("logged_in", "");
+    }
+
 
     void getOrderNumber() {
         final DatabaseReference RootRef;
@@ -87,7 +97,7 @@ public class OrderInformation extends AppCompatActivity {
                 if (dataSnapshot.hasChild(ORDER_NUMBER) || dataSnapshot.child(ORDER_NUMBER).exists()) {
                     orderNumber = Integer.valueOf(String.valueOf(dataSnapshot.child(ORDER_NUMBER).child(ORDER_NUMBER).getValue()));
                     Toast.makeText(OrderInformation.this, String.valueOf(orderNumber), Toast.LENGTH_SHORT).show();
-                    setOrderDetails();
+                    setOrderDetails(email);
 //                    Confirmation.setEnabled(true);
                 } else {
                     HashMap<String, Object> orderNumberMap = new HashMap<>();
@@ -99,7 +109,7 @@ public class OrderInformation extends AppCompatActivity {
                                     if (task.isSuccessful()) {
 //                                        Confirmation.setEnabled(true);
                                         Toast.makeText(OrderInformation.this, "added new OrderNumber", Toast.LENGTH_SHORT).show();
-                                        setOrderDetails();
+                                        setOrderDetails(email);
                                     } else {
 
                                         Toast.makeText(OrderInformation.this, "Network Error:please try again after some time ...", Toast.LENGTH_SHORT).show();
@@ -117,7 +127,7 @@ public class OrderInformation extends AppCompatActivity {
 
     }
 
-    void setOrderDetails() {
+    void setOrderDetails(String email) {
         final DatabaseReference RootRef;
         RootRef = FirebaseDatabase.getInstance().getReference();
         RootRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -131,14 +141,14 @@ public class OrderInformation extends AppCompatActivity {
                 userdataMap.put("radioValue", radioValue);
                 userdataMap.put("myEditText1Text", myEditText1Text);
                 userdataMap.put("myEditText2Text", myEditText2Text);
-                RootRef.child("Orders").child(String.valueOf((orderNumber + 1))).updateChildren(userdataMap)
+//                String key = RootRef.child("Users").child(email).child("Orders").push().getKey();
+                RootRef.child("Users").child(email).child("Orders").child(String.valueOf(orderNumber + 1)).updateChildren(userdataMap)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
                                     orderNumber += 1;
                                     updateOrderNumber();
-
                                 } else {
                                     Confirmation.setEnabled(true);
                                     Toast.makeText(OrderInformation.this, "Network Error:please try again after some time ...", Toast.LENGTH_SHORT).show();
@@ -158,13 +168,13 @@ public class OrderInformation extends AppCompatActivity {
     void saveToCache() {
         sharedpreferences = getSharedPreferences("new", 0);
         editor = sharedpreferences.edit();
-        if (!sharedpreferences.contains("orderNumber")) {
+        if (!sharedpreferences.contains(ORDER_NUMBER)) {
             Toast.makeText(OrderInformation.this, "not exist orderNumber", Toast.LENGTH_SHORT).show();
-            editor.putInt("orderNumber", 0);
+            editor.putInt(ORDER_NUMBER, 0);
             editor.commit();
         } else {
             Toast.makeText(OrderInformation.this, "yes exist orderNumber", Toast.LENGTH_SHORT).show();
-            orderNumber += sharedpreferences.getInt("orderNumber", 0);
+            orderNumber += sharedpreferences.getInt(ORDER_NUMBER, 0);
         }
         Toast.makeText(OrderInformation.this, String.valueOf(orderNumber), Toast.LENGTH_SHORT).show();
     }

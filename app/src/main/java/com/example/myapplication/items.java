@@ -1,5 +1,6 @@
 package com.example.myapplication;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -15,10 +16,12 @@ public class items extends AppCompatActivity implements View.OnClickListener {
     Button plastic;
     Button glass;
     Button aluminum;
-    Button next, profile,orderHistory;
+    Button next, profile,orderHistory , logOut;
 
     ArrayList<String> list = new ArrayList<String>();
 
+    SharedPreferences sharedpreferences;
+    SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +64,17 @@ public class items extends AppCompatActivity implements View.OnClickListener {
         orderHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+            }
+        });
+        logOut = findViewById(R.id.logOutButton);
+        logOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sharedpreferences = getSharedPreferences("new", 0);
+                editor = sharedpreferences.edit();
+                editor.remove("logged_in");
+                Intent intent = new Intent(items.this, login.class);
+                startActivity(intent);
             }
         });
     }

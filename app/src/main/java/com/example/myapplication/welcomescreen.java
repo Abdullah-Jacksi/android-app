@@ -33,6 +33,7 @@ public class welcomescreen extends AppCompatActivity {
     void saveToCache() {
         sharedpreferences = getSharedPreferences("new", 0);
         editor = sharedpreferences.edit();
+//        editor.remove("logged_in");
         if (!sharedpreferences.contains("logged_in")) {
 //            Toast.makeText(OrderInformation.this, "not exist orderNumber", Toast.LENGTH_SHORT).show();
 //            editor.putInt("logged_in", 0);
