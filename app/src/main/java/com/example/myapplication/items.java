@@ -64,6 +64,8 @@ public class items extends AppCompatActivity implements View.OnClickListener {
         orderHistory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(items.this, OrdersHistory.class);
+                startActivity(intent);
             }
         });
         logOut = findViewById(R.id.logOutButton);

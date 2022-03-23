@@ -76,7 +76,7 @@ public class OrderInformation extends AppCompatActivity {
 
 
                 getOrderNumberForUser();
-
+                getOrderNumberForAll();
 
             }
         });
@@ -142,6 +142,8 @@ public class OrderInformation extends AppCompatActivity {
                 userdataMap.put("radioValue", radioValue);
                 userdataMap.put("myEditText1Text", myEditText1Text);
                 userdataMap.put("myEditText2Text", myEditText2Text);
+                userdataMap.put("status" , "قيد الانتظار");
+
 //                String key = RootRef.child("Users").child(email).child("Orders").push().getKey();
                 RootRef.child("Users").child(email).child("Orders").child(String.valueOf(orderNumber + 1)).updateChildren(userdataMap)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -185,7 +187,7 @@ public class OrderInformation extends AppCompatActivity {
 //                                    Confirmation.setEnabled(true);
 //                                    Intent intent = new Intent(OrderInformation.this, MyLocation.class);
 //                                    startActivity(intent);
-                                    getOrderNumberForAll();
+//                                    getOrderNumberForAll();
                                 } else {
 
                                     Toast.makeText(OrderInformation.this, "Network Error:please try again after some time ...", Toast.LENGTH_SHORT).show();
@@ -256,6 +258,7 @@ public class OrderInformation extends AppCompatActivity {
                 userdataMap.put("radioValue", radioValue);
                 userdataMap.put("myEditText1Text", myEditText1Text);
                 userdataMap.put("myEditText2Text", myEditText2Text);
+                userdataMap.put("status" , "قيد الانتظار");
 //                String key = RootRef.child("Users").child(email).child("Orders").push().getKey();
                 RootRef.child("AllOrders").child(String.valueOf(totalOrderNumber + 1)).updateChildren(userdataMap)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
