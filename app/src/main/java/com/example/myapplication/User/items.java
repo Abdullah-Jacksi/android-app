@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.User;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -8,6 +8,9 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.myapplication.R;
+import com.example.myapplication.login;
 
 import java.util.ArrayList;
 
@@ -75,6 +78,8 @@ public class items extends AppCompatActivity implements View.OnClickListener {
                 sharedpreferences = getSharedPreferences("new", 0);
                 editor = sharedpreferences.edit();
                 editor.remove("logged_in");
+                editor.remove("user_type");
+                editor.apply();
                 Intent intent = new Intent(items.this, login.class);
                 startActivity(intent);
             }

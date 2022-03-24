@@ -48,6 +48,8 @@
             android:background="@color/colorAccent"
 
             app:tabTextColor="@color/colorPrimaryDark" />
+
+
     </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -58,7 +60,7 @@
         android:background="#E4E0E0"
         android:orientation="vertical"
         android:weightSum="10"
-        tools:context="com.example.myapplication.items">
+        tools:context="com.example.myapplication.User.items">
 
         <RelativeLayout
             android:layout_width="match_parent"

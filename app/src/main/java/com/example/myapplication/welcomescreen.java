@@ -1,9 +1,13 @@
 package com.example.myapplication;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.myapplication.Admin.AdminHomeScreen;
+import com.example.myapplication.User.items;
 
 public class welcomescreen extends AppCompatActivity {
     SharedPreferences sharedpreferences;
@@ -34,18 +38,31 @@ public class welcomescreen extends AppCompatActivity {
         sharedpreferences = getSharedPreferences("new", 0);
         editor = sharedpreferences.edit();
 //        editor.remove("logged_in");
-        if (!sharedpreferences.contains("logged_in")) {
-//            Toast.makeText(OrderInformation.this, "not exist orderNumber", Toast.LENGTH_SHORT).show();
-//            editor.putInt("logged_in", 0);
-//            editor.commit();
-            Intent intent = new Intent(getApplicationContext() , introscreen1.class); // introscreen1.class);
-            startActivity(intent);
-            finish();
+//        Toast.makeText(this, String.valueOf(sharedpreferences.contains("logged_in")), Toast.LENGTH_SHORT).show();
+//        Log.d("asd" ,String.valueOf(sharedpreferences.contains("logged_in")));
+        if (!sharedpreferences.contains("user_type")) {
+                Intent intent = new Intent(getApplicationContext() , introscreen1.class); // introscreen1.class);
+                startActivity(intent);
+                finish();
+
         } else {
-            Intent intent = new Intent(getApplicationContext() , items.class); // introscreen1.class);
-            startActivity(intent);
-            finish();
-//            Toast.makeText(OrderInformation.this, "yes exist orderNumber", Toast.LENGTH_SHORT).show();
+            String type =  sharedpreferences.getString("user_type", "");
+            if (type.equals("user")) {
+                Intent intent = new Intent(getApplicationContext() , items.class); // introscreen1.class);
+                startActivity(intent);
+                finish();
+            }
+            else if (type.equals("admin")){
+                Intent intent = new Intent(getApplicationContext() , AdminHomeScreen.class); // introscreen1.class);
+                startActivity(intent);
+                finish();
+            }
+            else {
+                Intent intent = new Intent(getApplicationContext() , register.class); // introscreen1.class);
+                startActivity(intent);
+                finish();
+            }
+//            Toast.makeText(OrderInformation.this, String.valueOf(sharedpreferences.contains("logged_in")), Toast.LENGTH_SHORT).show();
         }
 //        Toast.makeText(OrderInformation.this, String.valueOf(orderNumber), Toast.LENGTH_SHORT).show();
     }

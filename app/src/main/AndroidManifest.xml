@@ -15,7 +15,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".OrdersHistory"
+            android:name=".Admin.AdminHomeScreen"
+            android:exported="false" />
+        <activity
+            android:name=".User.OrdersHistory"
             android:exported="false" />
 
         <meta-data
@@ -83,7 +86,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".OrderDetails"
+            android:name=".User.OrderDetails"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -92,7 +95,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".OrderInformation"
+            android:name=".User.OrderInformation"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -101,7 +104,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MyLocation"
+            android:name=".User.MyLocation"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -110,7 +113,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".items"
+            android:name=".User.items"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -119,9 +122,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ProfileActivity"
+            android:name=".User.ProfileActivity"
             android:exported="true"
-            android:parentActivityName=".items">
+            android:parentActivityName=".User.items">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

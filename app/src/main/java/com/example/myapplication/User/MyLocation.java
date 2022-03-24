@@ -1,5 +1,5 @@
 
-package com.example.myapplication;
+package com.example.myapplication.User;
 
 import android.Manifest;
 import android.content.Intent;
@@ -21,6 +21,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import com.example.myapplication.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationCallback;

@@ -17,7 +17,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.myapplication.Admin.AdminHomeScreen;
 import com.example.myapplication.Model.Users;
+import com.example.myapplication.User.items;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -41,6 +43,12 @@ public class login extends AppCompatActivity {
         sharedpreferences = getSharedPreferences("new", 0);
         editor = sharedpreferences.edit();
         editor.putString("logged_in", email);
+        editor.commit();
+    }
+    void saveTypeToCache(String type) {
+        sharedpreferences = getSharedPreferences("new", 0);
+        editor = sharedpreferences.edit();
+        editor.putString("user_type", type);
         editor.commit();
     }
 
@@ -159,7 +167,10 @@ public class login extends AppCompatActivity {
                                 Toast.makeText(login.this, "Welcome Admin, you are logged in Successfully...", Toast.LENGTH_SHORT).show();
                                 loadingBar.dismiss();
 
-                                Intent intent = new Intent(login.this, OrderInformation.class);
+//                              sharedpreferences.getString("logged_in", "");
+                                saveTypeToCache("admin");
+
+                                Intent intent = new Intent(login.this, AdminHomeScreen.class);
                                 startActivity(intent);
                             }
                             else if (parentDbName.equals("Users"))
@@ -168,6 +179,8 @@ public class login extends AppCompatActivity {
                                 loadingBar.dismiss();
 
                                 saveToCache(em);
+                                saveTypeToCache("user");
+
                                 Intent intent = new Intent(login.this, items.class);
 //                                TODO: from here to show user info in info screen
 //                                Prevalent.currentOnlineUser = usersData;
