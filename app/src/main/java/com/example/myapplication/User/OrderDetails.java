@@ -6,7 +6,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -40,7 +39,7 @@ public class OrderDetails extends AppCompatActivity {
                 myEditText2 =  (EditText) findViewById(R.id.editTextTextPersonName);
                 myEditText2Text = myEditText2.getText().toString();
 
-                Toast.makeText(OrderDetails.this,radioValue , Toast.LENGTH_SHORT).show();
+//                Toast.makeText(OrderDetails.this,radioValue , Toast.LENGTH_SHORT).show();
 
                 Intent intent = new Intent(OrderDetails.this, MyLocation.class);
                 intent.putExtra("myList"  , myList);

@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -181,12 +182,30 @@ public class MyLocation extends FragmentActivity implements OnMapReadyCallback ,
 //                            Toast.makeText(MyLocation.this, String.format("Latitude : %s\n Longitude: %s", lati, longi) , Toast.LENGTH_SHORT).show();
                             geocoder = new Geocoder(MyLocation.this, Locale.getDefault());
                             try {
-                                addresses = geocoder.getFromLocation(lati, longi, 1);
-                                String state = addresses.get(0).getAdminArea();
-                                String country = addresses.get(0).getCountryName();
-                                locationList.add(country);
-                                locationList.add(state);
-                                Toast.makeText(MyLocation.this,  state  + " - " + country  , Toast.LENGTH_LONG).show();
+
+                                addresses = geocoder.getFromLocation(  lati, longi, 1); // 24.774265 , 46.738586,1); //
+
+                                Log.d("asd" , String.valueOf(addresses));
+                                Log.d("asd" , String.valueOf(addresses.get(0).getFeatureName()));
+                                Log.d("asd" , String.valueOf(addresses.get(0).getAdminArea()));
+                                Log.d("asd" , String.valueOf(addresses.get(0).getSubAdminArea()));
+                                Log.d("asd" , String.valueOf(addresses.get(0).getLocality()));
+
+                                if(addresses.get(0).getFeatureName().equals("Riyadh") || addresses.get(0).getAdminArea().equals("Riyadh Province") || addresses.get(0).getSubAdminArea().equals("Ar-Riyad") ){
+                                    String state = addresses.get(0).getAdminArea();
+                                    String country = addresses.get(0).getCountryName();
+                                    locationList.add(country);
+                                    locationList.add(state);
+                                }
+                                else{
+                                    next2.setText("Try Again later");
+                                   Toast.makeText(MyLocation.this, "The App works just for Riyadh Province work right now! " , Toast.LENGTH_SHORT).show();
+
+                                    return;
+                                }
+
+//                                Toast.makeText(MyLocation.this,    , Toast.LENGTH_LONG).show();
+//                                Toast.makeText(MyLocation.this,  state  + " - " + country  , Toast.LENGTH_LONG).show();
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
@@ -220,8 +239,9 @@ public class MyLocation extends FragmentActivity implements OnMapReadyCallback ,
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.mMap = googleMap;
-
         LatLng TutorialsPoint = new LatLng( 24.774265, 46.738586);
+//        mMap.setMaxZoomPreference(22);
+        mMap.setMinZoomPreference(9);
         this.mMap.addMarker(new
                 MarkerOptions().position(TutorialsPoint).title("initial location"));
         this.mMap.moveCamera(CameraUpdateFactory.newLatLng(TutorialsPoint));
