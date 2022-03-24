@@ -1,5 +1,8 @@
 package com.example.myapplication.User;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -41,6 +44,7 @@ public class OrderInformation extends AppCompatActivity {
     private static final String TOTAL_ORDER_NUMBER = "TotalOrderNumber";
     Integer totalOrderNumber = 0;
 
+    ProgressDialog progressDialog;
 
 
     @Override
@@ -73,17 +77,35 @@ public class OrderInformation extends AppCompatActivity {
 
                 Confirmation.setEnabled(false);
 
-                email = getEmailFromCache ();
+                AlertDialog.Builder builder = new AlertDialog.Builder(OrderInformation.this);
+                builder.setTitle("Confirm your order!");
+                builder.setMessage("Are you sure you want to send the order");
+                builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
 
 
-                getOrderNumberForUser();
-                getOrderNumberForAll();
+                        progressDialog = new ProgressDialog(OrderInformation.this, R.style.DialogStyle); //new ProgressDialog(this);
+                        progressDialog.setTitle("Please wait, it is sending your order");
+                //        progressDialog.setMessage(" ");
+                        progressDialog.setCancelable(true);
+                        progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                        progressDialog.show();
+
+                        email = getEmailFromCache();
+                        getOrderNumberForUser();
+                        getOrderNumberForAll();
+                    }
+                });
+
+                builder.setNegativeButton("back", null);
+                builder.show();
 
             }
         });
     }
 
-    String getEmailFromCache (){
+    String getEmailFromCache() {
         sharedpreferences = getSharedPreferences("new", 0);
         return sharedpreferences.getString("logged_in", "");
     }
@@ -143,7 +165,7 @@ public class OrderInformation extends AppCompatActivity {
                 userdataMap.put("radioValue", radioValue);
                 userdataMap.put("myEditText1Text", myEditText1Text);
                 userdataMap.put("myEditText2Text", myEditText2Text);
-                userdataMap.put("status" , "قيد الانتظار");
+                userdataMap.put("status", "قيد الانتظار");
 
 //                String key = RootRef.child("Users").child(email).child("Orders").push().getKey();
                 RootRef.child("Users").child(email).child("Orders").child(String.valueOf(orderNumber + 1)).updateChildren(userdataMap)
@@ -259,7 +281,7 @@ public class OrderInformation extends AppCompatActivity {
                 userdataMap.put("radioValue", radioValue);
                 userdataMap.put("myEditText1Text", myEditText1Text);
                 userdataMap.put("myEditText2Text", myEditText2Text);
-                userdataMap.put("status" , "قيد الانتظار");
+                userdataMap.put("status", "قيد الانتظار");
 //                String key = RootRef.child("Users").child(email).child("Orders").push().getKey();
                 RootRef.child("AllOrders").child(String.valueOf(totalOrderNumber + 1)).updateChildren(userdataMap)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -301,6 +323,7 @@ public class OrderInformation extends AppCompatActivity {
 //                                    Toast.makeText(OrderInformation.this, "updated OrderNumber", Toast.LENGTH_SHORT).show();
 //                                    Toast.makeText(OrderInformation.this, "your order sent! ", Toast.LENGTH_SHORT).show();
                                     Confirmation.setEnabled(true);
+                                    progressDialog.dismiss();
                                     Intent intent = new Intent(OrderInformation.this, items.class);
                                     startActivity(intent);
                                 } else {
@@ -316,7 +339,6 @@ public class OrderInformation extends AppCompatActivity {
             }
         });
     }
-
 
 
     void saveToCache() {

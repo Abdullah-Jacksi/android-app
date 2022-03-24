@@ -11,7 +11,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -177,25 +176,21 @@ public class MyLocation extends FragmentActivity implements OnMapReadyCallback ,
                             Location location = new Location("providerNA");
                             location.setLongitude(longi);
                             location.setLatitude(lati);
-                            locationList.add(String.valueOf(lati));
-                            locationList.add(String.valueOf(longi));
+
 //                            Toast.makeText(MyLocation.this, String.format("Latitude : %s\n Longitude: %s", lati, longi) , Toast.LENGTH_SHORT).show();
                             geocoder = new Geocoder(MyLocation.this, Locale.getDefault());
                             try {
 
-                                addresses = geocoder.getFromLocation(  lati, longi, 1); // 24.774265 , 46.738586,1); //
-
-                                Log.d("asd" , String.valueOf(addresses));
-                                Log.d("asd" , String.valueOf(addresses.get(0).getFeatureName()));
-                                Log.d("asd" , String.valueOf(addresses.get(0).getAdminArea()));
-                                Log.d("asd" , String.valueOf(addresses.get(0).getSubAdminArea()));
-                                Log.d("asd" , String.valueOf(addresses.get(0).getLocality()));
+//                                addresses = geocoder.getFromLocation(  lati, longi, 1);
+                                addresses = geocoder.getFromLocation(  24.774265, 46.738586, 1);
 
                                 if(addresses.get(0).getFeatureName().equals("Riyadh") || addresses.get(0).getAdminArea().equals("Riyadh Province") || addresses.get(0).getSubAdminArea().equals("Ar-Riyad") ){
                                     String state = addresses.get(0).getAdminArea();
-                                    String country = addresses.get(0).getCountryName();
-                                    locationList.add(country);
+                                    String address = addresses.get(0).getAddressLine(0);
+                                    locationList.add(address);
                                     locationList.add(state);
+                                    locationList.add(String.valueOf(lati));
+                                    locationList.add(String.valueOf(longi));
                                 }
                                 else{
                                     next2.setText("Try Again later");
