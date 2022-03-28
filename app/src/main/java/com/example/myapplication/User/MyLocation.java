@@ -75,11 +75,11 @@ public class MyLocation extends FragmentActivity implements OnMapReadyCallback ,
 
         Toast.makeText(MyLocation.this, "Location and Internet must be turn on!", Toast.LENGTH_LONG).show();
 
-//        myList = (ArrayList<String>) getIntent().getSerializableExtra("myList");
-//        Bundle bundle = getIntent().getExtras();
-//        radioValue = bundle.getString("radioValue");
-//        myEditText1Text = bundle.getString("myEditText1Text");
-//        myEditText2Text = bundle.getString("myEditText2Text");
+        myList = (ArrayList<String>) getIntent().getSerializableExtra("myList");
+        Bundle bundle = getIntent().getExtras();
+        radioValue = bundle.getString("radioValue");
+        myEditText1Text = bundle.getString("myEditText1Text");
+        myEditText2Text = bundle.getString("myEditText2Text");
 
 
 //        mLocationClient = new FusedLocationProviderClient(this);

@@ -7,7 +7,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -25,7 +29,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class OrderInformation extends AppCompatActivity {
+public class OrderInformation extends AppCompatActivity implements AdapterView.OnItemClickListener{
 
 
     ArrayList<String> myList, locationList;
@@ -46,11 +50,16 @@ public class OrderInformation extends AppCompatActivity {
 
     ProgressDialog progressDialog;
 
+    TextView notes,address, amount, type, textView15;
+
+    ListView listView;
+    ArrayAdapter<String> ordersListAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.orderinformation);
+
 
 
         myList = (ArrayList<String>) getIntent().getSerializableExtra("myList");
@@ -59,6 +68,32 @@ public class OrderInformation extends AppCompatActivity {
         radioValue = bundle.getString("radioValue");
         myEditText1Text = bundle.getString("myEditText1Text");
         myEditText2Text = bundle.getString("myEditText2Text");
+
+
+        listView = findViewById(R.id.listViewOrder);
+        listView.setOnItemClickListener(this);
+        ordersListAdapter = new ArrayAdapter(OrderInformation.this, android.R.layout.simple_list_item_1,myList);
+        listView.setAdapter(ordersListAdapter);
+
+
+        notes = (TextView) findViewById(R.id.notesm);
+        address= (TextView)findViewById(R.id.addressm);
+        amount= (TextView)findViewById(R.id.amountm);
+        type= (TextView)findViewById(R.id.typem);
+
+        textView15 = (TextView)findViewById(R.id.textView15);
+        if(radioValue.equals("Amount")){
+            textView15.setText("The Amount");
+        }else{
+            textView15.setText("The Weight");
+        }
+
+        notes.setText(myEditText2Text);
+        address.setText(locationList.get(0));
+        amount.setText(myEditText1Text);
+        type.setText(radioValue);
+
+//                Toast.makeText(OrderInformation.this,myEditText2Text+" "+ myEditText1Text+" "+ radioValue+" "+myList.get(0), Toast.LENGTH_LONG).show();
 
 
         Confirmation = (Button) findViewById(R.id.Confirmation);
@@ -104,6 +139,7 @@ public class OrderInformation extends AppCompatActivity {
             }
         });
     }
+
 
     String getEmailFromCache() {
         sharedpreferences = getSharedPreferences("new", 0);
@@ -356,4 +392,8 @@ public class OrderInformation extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+    }
 }

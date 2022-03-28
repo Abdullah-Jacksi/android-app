@@ -30,6 +30,15 @@ public class OrderDetails extends AppCompatActivity {
 
 //        Toast.makeText(OrderDetails.this,myList1.get(0) , Toast.LENGTH_LONG).show();
 
+
+        radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
+
+        int radioId = radioGroup.getCheckedRadioButtonId();
+
+        radioButton = findViewById(radioId);
+
+        radioValue = radioButton.getText().toString();
+
         Next = (Button) findViewById(R.id.next);
         Next.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -43,7 +52,12 @@ public class OrderDetails extends AppCompatActivity {
 
                 Intent intent = new Intent(OrderDetails.this, MyLocation.class);
                 intent.putExtra("myList"  , myList);
-                intent.putExtra("radioValue", radioValue);
+//                if(radioValue.isEmpty()){
+//                    intent.putExtra("radioValue", "Amount");
+//                }
+//               else{
+                    intent.putExtra("radioValue", radioValue);
+//                }
                 intent.putExtra("myEditText1Text", myEditText1Text);
                 intent.putExtra("myEditText2Text", myEditText2Text);
 
