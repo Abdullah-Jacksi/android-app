@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -72,6 +73,7 @@ public class OrderInformation extends AppCompatActivity implements AdapterView.O
 
         listView = findViewById(R.id.listViewOrder);
         listView.setOnItemClickListener(this);
+        Log.d("asd", String.valueOf(myList.size()));
         ordersListAdapter = new ArrayAdapter(OrderInformation.this, android.R.layout.simple_list_item_1,myList);
         listView.setAdapter(ordersListAdapter);
 
@@ -104,11 +106,11 @@ public class OrderInformation extends AppCompatActivity implements AdapterView.O
 //                    Toast.makeText(OrderInformation.this, myList.size() + " " + radioValue + " " + myEditText1Text + " " + myEditText2Text, Toast.LENGTH_LONG).show();
 //                    Toast.makeText(OrderInformation.this, locationList.get(0) + " " + locationList.get(1) + " " + locationList.get(2) + " " + locationList.get(3), Toast.LENGTH_LONG).show();
 
-                myList.add("paper");
-                myList.add("aluminum");
-                radioValue = "Amount";
-                myEditText1Text = "50";
-                myEditText2Text = "another note";
+//                myList.add("paper");
+//                myList.add("aluminum");
+//                radioValue = "Amount";
+//                myEditText1Text = "50";
+//                myEditText2Text = "another note";
 
                 Confirmation.setEnabled(false);
 
