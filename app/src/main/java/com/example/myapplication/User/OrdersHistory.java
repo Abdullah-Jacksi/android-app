@@ -4,7 +4,9 @@ import android.app.ProgressDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -42,6 +44,8 @@ public class OrdersHistory extends AppCompatActivity {
     ArrayList<OrderModel> ordersList;
     ArrayList<String> orderDetails = new ArrayList<String>();
 
+    Button back;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +64,13 @@ public class OrdersHistory extends AppCompatActivity {
 
         getOrdersOfUser();
 
+        back = findViewById(R.id.back2);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
 
     }

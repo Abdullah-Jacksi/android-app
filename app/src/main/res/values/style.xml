@@ -4,4 +4,7 @@
         <!--Other custom stuff if needed-->
         <item name="android:layout_width">wrap_content</item>
     </style>
+    <style name="AppThemeLight" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:itemBackground">#FFFFFF</item>
+    </style>
 </resources>

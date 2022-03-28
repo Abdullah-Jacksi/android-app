@@ -19,7 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.myapplication.Admin.AdminHomeScreen;
 import com.example.myapplication.Model.Users;
-import com.example.myapplication.User.items;
+import com.example.myapplication.User.MainActivity;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -181,7 +181,7 @@ public class login extends AppCompatActivity {
                                 saveToCache(em);
                                 saveTypeToCache("user");
 
-                                Intent intent = new Intent(login.this, items.class);
+                                Intent intent = new Intent(login.this, MainActivity.class);
 //                                TODO: from here to show user info in info screen
 //                                Prevalent.currentOnlineUser = usersData;
                                 startActivity(intent);

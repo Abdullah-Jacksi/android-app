@@ -26,10 +26,13 @@ public class items extends AppCompatActivity implements View.OnClickListener {
     SharedPreferences sharedpreferences;
     SharedPreferences.Editor editor;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.items);
+
+
         paper = findViewById(R.id.paper);
         plastic = findViewById(R.id.plastic);
         glass = findViewById(R.id.glass);
@@ -42,7 +45,8 @@ public class items extends AppCompatActivity implements View.OnClickListener {
 //
                 if(list.size() == 0 || list.isEmpty()){
                     Toast.makeText(items.this, "you should select one at least", Toast.LENGTH_LONG).show();
-                }else{
+                }
+                else{
                     Intent intent = new Intent(items.this, OrderDetails.class);
                     intent.putExtra("myList"  , list);
                     startActivity(intent);
@@ -111,6 +115,7 @@ public class items extends AppCompatActivity implements View.OnClickListener {
 
         }
     }
+
 
 }
 

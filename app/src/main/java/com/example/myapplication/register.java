@@ -62,6 +62,13 @@ public class register extends AppCompatActivity {
             editor.commit();
     }
 
+    void saveUserNameToCache(String userName) {
+        sharedpreferences = getSharedPreferences("new", 0);
+        editor = sharedpreferences.edit();
+        editor.putString("userName", userName);
+        editor.commit();
+    }
+
     private void RegisterUser() {
         String user = Username.getText().toString();
         String pass = Password.getText().toString();
@@ -104,6 +111,7 @@ public class register extends AppCompatActivity {
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
                                         Toast.makeText(register.this, "Congratulation,Your account has been created. ", Toast.LENGTH_SHORT).show();
+                                        saveUserNameToCache(user);
                                         loadingBar.dismiss();
                                         Intent intent = new Intent(register.this, login.class);
                                         startActivity(intent);
