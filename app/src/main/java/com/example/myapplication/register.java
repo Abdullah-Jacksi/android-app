@@ -99,13 +99,13 @@ public class register extends AppCompatActivity {
         RootRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (!(dataSnapshot.child("Users").child(em).exists())) {
+                if (!(dataSnapshot.child("Users").child(user).exists())) {
                     HashMap<String, Object> userdataMap = new HashMap<>();
                     userdataMap.put("user", user);
                     userdataMap.put("Em", em);
                     userdataMap.put("Pass", pass);
                     userdataMap.put("Ph", ph);
-                    RootRef.child("Users").child(em).updateChildren(userdataMap)
+                    RootRef.child("Users").child(user).updateChildren(userdataMap)
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
