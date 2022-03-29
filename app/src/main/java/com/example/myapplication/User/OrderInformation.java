@@ -124,7 +124,7 @@ public class OrderInformation extends AppCompatActivity implements AdapterView.O
 
                         progressDialog = new ProgressDialog(OrderInformation.this, R.style.DialogStyle); //new ProgressDialog(this);
                         progressDialog.setTitle("Please wait, it is sending your order");
-                //        progressDialog.setMessage(" ");
+                //      progressDialog.setMessage(" ");
                         progressDialog.setCancelable(true);
                         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
                         progressDialog.show();

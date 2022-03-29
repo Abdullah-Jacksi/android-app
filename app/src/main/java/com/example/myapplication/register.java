@@ -9,8 +9,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
@@ -18,6 +20,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
 import java.util.HashMap;
 public class register extends AppCompatActivity {
     private EditText Username, Email, Password, Repassword, PhoneNumber;
@@ -27,6 +30,10 @@ public class register extends AppCompatActivity {
 
     SharedPreferences sharedpreferences;
     SharedPreferences.Editor editor;
+
+    private static final String USER_NUMBER = "UserNumber";
+    int userNumberCounter = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +57,8 @@ public class register extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                RegisterUser();
+                getOrderNumberForUser();
+//                RegisterUser();
             }
         });
     }
@@ -67,6 +75,54 @@ public class register extends AppCompatActivity {
         editor = sharedpreferences.edit();
         editor.putString("userName", userName);
         editor.commit();
+    }
+
+
+    void getOrderNumberForUser() {
+
+        loadingBar.setTitle("Create Account");
+        loadingBar.setMessage("Please wait,while we are checking the credentials.");
+        loadingBar.setCanceledOnTouchOutside(false);
+        loadingBar.show();
+
+        final DatabaseReference RootRef;
+        RootRef = FirebaseDatabase.getInstance().getReference();
+        RootRef.child("Users").child(USER_NUMBER).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                if (dataSnapshot.hasChild(USER_NUMBER) || dataSnapshot.child(USER_NUMBER).exists()) {
+                    userNumberCounter = Integer.valueOf(String.valueOf(dataSnapshot.child(USER_NUMBER).getValue()));
+//                    Toast.makeText(OrderInformation.this, String.valueOf(orderNumber+1), Toast.LENGTH_SHORT).show();
+                    RegisterUser();
+//                    Confirmation.setEnabled(true);
+                } else {
+                    HashMap<String, Object> orderNumberMap = new HashMap<>();
+                    orderNumberMap.put(USER_NUMBER, 0);
+                    RootRef.child("Users").child(USER_NUMBER).updateChildren(orderNumberMap)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+//                                        Confirmation.setEnabled(true);
+//                                        Toast.makeText(OrderInformation.this, "added new OrderNumber", Toast.LENGTH_SHORT).show();
+//                                        setOrderDetailsForUser();
+                                        RegisterUser();
+                                    } else {
+                                        loadingBar.dismiss();
+                                        Toast.makeText(register.this, "Network Error:please try again after some time ...", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
     }
 
     private void RegisterUser() {
@@ -86,10 +142,6 @@ public class register extends AppCompatActivity {
         } else if (TextUtils.isEmpty(ph)) {
             Toast.makeText(register.this, "Please write your phoneNumber", Toast.LENGTH_SHORT).show();
         } else {
-            loadingBar.setTitle("Create Account");
-            loadingBar.setMessage("Please wait,while we are checking the credentials.");
-            loadingBar.setCanceledOnTouchOutside(false);
-            loadingBar.show();
             ValidateEmail(user, pass, em, ph);
         }
     }
@@ -105,16 +157,15 @@ public class register extends AppCompatActivity {
                     userdataMap.put("Em", em);
                     userdataMap.put("Pass", pass);
                     userdataMap.put("Ph", ph);
-                    RootRef.child("Users").child(user).updateChildren(userdataMap)
+                    RootRef.child("Users").child(String.valueOf(userNumberCounter + 1)).updateChildren(userdataMap)
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
                                         Toast.makeText(register.this, "Congratulation,Your account has been created. ", Toast.LENGTH_SHORT).show();
+                                        userNumberCounter += 1;
+                                        updateOrderNumberForUser();
                                         saveUserNameToCache(user);
-                                        loadingBar.dismiss();
-                                        Intent intent = new Intent(register.this, login.class);
-                                        startActivity(intent);
                                     } else {
                                         loadingBar.dismiss();
                                         Toast.makeText(register.this, "Network Error:please try again after some time ...", Toast.LENGTH_SHORT).show();
@@ -131,6 +182,47 @@ public class register extends AppCompatActivity {
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
+    }
+
+
+
+    void updateOrderNumberForUser() {
+        final DatabaseReference RootRef;
+        RootRef = FirebaseDatabase.getInstance().getReference();
+        RootRef.child("Users").child(USER_NUMBER).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                HashMap<String, Object> orderNumberMap = new HashMap<>();
+                orderNumberMap.put(USER_NUMBER, userNumberCounter);
+                RootRef.child("Users").child(USER_NUMBER).updateChildren(orderNumberMap)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    loadingBar.dismiss();
+                                    Intent intent = new Intent(register.this, login.class);
+                                    startActivity(intent);
+//                                        Confirmation.setEnabled(true);
+//                                    Toast.makeText(OrderInformation.this, "updated OrderNumber", Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(OrderInformation.this, "your order sent! ", Toast.LENGTH_SHORT).show();
+//                                    Confirmation.setEnabled(true);
+//                                    Intent intent = new Intent(OrderInformation.this, MyLocation.class);
+//                                    startActivity(intent);
+//                                    getOrderNumberForAll();
+                                } else {
+
+                                    Toast.makeText(register.this, "Network Error:please try again after some time ...", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
     }
