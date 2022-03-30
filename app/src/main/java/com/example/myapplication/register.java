@@ -64,6 +64,8 @@ public class register extends AppCompatActivity {
                 startActivity(new Intent(getApplicationContext(), login.class));
             }
         });
+
+
         Switch onOffSwitch = (Switch)  findViewById(R.id.switch1);
         onOffSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 

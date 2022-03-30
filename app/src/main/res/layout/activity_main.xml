@@ -26,7 +26,7 @@
 
         <GridLayout
             android:layout_width="match_parent"
-            android:layout_height="500dp"
+            android:layout_height="wrap_content"
             android:alignmentMode="alignMargins"
             android:columnCount="2"
             android:columnOrderPreserved="false"
@@ -34,8 +34,8 @@
             android:rowCount="2">
 
             <androidx.cardview.widget.CardView
-                android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_rowWeight="1"
                 android:layout_columnWeight="1"
                 android:layout_marginLeft="16dp"
@@ -53,19 +53,18 @@
 
                     <Button
                         android:id="@id/paper"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_width="100dp"
+                        android:layout_height="150dp"
                         android:layout_gravity="center_horizontal"
-                        android:scrollbarSize="10dp"
                         android:background="@drawable/paper"
-                        />
+                        android:scrollbarSize="10dp" />
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
-                android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_rowWeight="1"
                 android:layout_columnWeight="1"
                 android:layout_marginLeft="16dp"
@@ -83,18 +82,17 @@
 
                     <Button
                         android:id="@id/plastic"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="100dp"
+                        android:layout_height="150dp"
                         android:layout_gravity="center_horizontal"
-                        android:background="@drawable/plastic"
-                        />
+                        android:background="@drawable/plastic" />
 
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
-                android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_rowWeight="1"
                 android:layout_columnWeight="1"
                 android:layout_marginLeft="16dp"
@@ -112,17 +110,16 @@
 
                     <Button
                         android:id="@id/glass"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="100dp"
+                        android:layout_height="150dp"
                         android:layout_gravity="center_horizontal"
-                        android:background="@drawable/glass"
-                        />
+                        android:background="@drawable/glass" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
-                android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_rowWeight="1"
                 android:layout_columnWeight="1"
                 android:layout_marginLeft="16dp"
@@ -140,11 +137,10 @@
 
                     <Button
                         android:id="@id/aluminum"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="100dp"
+                        android:layout_height="150dp"
                         android:layout_gravity="center_horizontal"
-                        android:background="@drawable/aluminum"
-                        />
+                        android:background="@drawable/aluminum" />
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
