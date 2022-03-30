@@ -32,9 +32,6 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".home"
-            android:exported="false" />
-        <activity
             android:name=".welcomescreen"
             android:exported="true">
             <intent-filter>
@@ -108,15 +105,6 @@
         </activity>
         <activity
             android:name=".User.MyLocation"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".User.items"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

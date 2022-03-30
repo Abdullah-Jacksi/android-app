@@ -22,7 +22,7 @@ import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
+public class Items extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
 
     Button paper;
     Button plastic;
@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.items);
 
 
 
@@ -58,10 +58,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //                String s = list.size();
 //
                 if(list.size() == 0 || list.isEmpty()){
-                    Toast.makeText(MainActivity.this, "you should select one at least", Toast.LENGTH_LONG).show();
+                    Toast.makeText(Items.this, "you should select one at least", Toast.LENGTH_LONG).show();
                 }
                 else{
-                    Intent intent = new Intent(MainActivity.this, OrderDetails.class);
+                    Intent intent = new Intent(Items.this, OrderDetails.class);
                     intent.putExtra("myList"  , list);
                     startActivity(intent);
                 }
@@ -108,13 +108,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     case R.id.ordersDrawer: {
                         //do somthing
-                        Intent intent = new Intent(MainActivity.this, OrdersHistory.class);
+                        Intent intent = new Intent(Items.this, OrdersHistory.class);
                         startActivity(intent);
                         break;
                     }
                     case R.id.profileDrawer: {
                         //do somthing
-                        Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+                        Intent intent = new Intent(Items.this, ProfileActivity.class);
                         startActivity(intent);
                         break;
                     }
@@ -125,12 +125,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         editor.remove("logged_in");
                         editor.remove("user_type");
                         editor.apply();
-                        Intent intent = new Intent(MainActivity.this, login.class);
+                        Intent intent = new Intent(Items.this, login.class);
                         startActivity(intent);
                         break;
                     }
                     default:{
-                        Toast.makeText(MainActivity.this,"there is an error", Toast.LENGTH_LONG).show();
+                        Toast.makeText(Items.this,"there is an error", Toast.LENGTH_LONG).show();
                         break;
                     }
                 }
@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        Toast.makeText(MainActivity.this,item.getTitle().toString(), Toast.LENGTH_LONG).show();
+        Toast.makeText(Items.this,item.getTitle().toString(), Toast.LENGTH_LONG).show();
         Log.d("asd","asd");
         return false;
     }
