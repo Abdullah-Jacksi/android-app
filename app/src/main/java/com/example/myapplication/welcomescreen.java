@@ -7,7 +7,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.myapplication.Admin.AdminHomeScreen;
-import com.example.myapplication.User.MainActivity;
+import com.example.myapplication.User.Items;
 
 public class welcomescreen extends AppCompatActivity {
     SharedPreferences sharedpreferences;
@@ -48,7 +48,7 @@ public class welcomescreen extends AppCompatActivity {
         } else {
             String type =  sharedpreferences.getString("user_type", "");
             if (type.equals("user")) {
-                Intent intent = new Intent(getApplicationContext() , MainActivity.class); // introscreen1.class);
+                Intent intent = new Intent(getApplicationContext() , Items.class); // introscreen1.class);
                 startActivity(intent);
                 finish();
             }

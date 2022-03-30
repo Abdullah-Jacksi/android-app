@@ -365,7 +365,7 @@ public class OrderInformation extends AppCompatActivity implements AdapterView.O
 //                                    Toast.makeText(OrderInformation.this, "your order sent! ", Toast.LENGTH_SHORT).show();
                                     Confirmation.setEnabled(true);
                                     progressDialog.dismiss();
-                                    Intent intent = new Intent(OrderInformation.this, MainActivity.class);
+                                    Intent intent = new Intent(OrderInformation.this, Items.class);
                                     startActivity(intent);
                                 } else {
                                     Toast.makeText(OrderInformation.this, "Network Error:please try again after some time ...", Toast.LENGTH_SHORT).show();

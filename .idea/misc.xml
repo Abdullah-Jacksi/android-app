@@ -21,6 +21,7 @@
         <entry key="app/src/main/res/drawable/ic_shopping.xml" value="0.1475" />
         <entry key="app/src/main/res/drawable/orders.xml" value="0.2295" />
         <entry key="app/src/main/res/drawable/side_nav_bar.xml" value="0.2295" />
+        <entry key="app/src/main/res/layout-v21/Items.xml" value="0.13697916666666668" />
         <entry key="app/src/main/res/layout-v21/activity_main.xml" value="0.176374877969411" />
         <entry key="app/src/main/res/layout-v21/main_toolbar.xml" value="0.21784420289855072" />
         <entry key="app/src/main/res/layout/activity_admin_home_screen.xml" value="0.17608118471891981" />

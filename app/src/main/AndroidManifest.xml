@@ -21,7 +21,7 @@
             android:name=".User.OrdersHistory"
             android:exported="false" />
         <activity
-            android:name=".User.MainActivity"
+            android:name=".User.Items"
             android:exported="true" />
 
         <meta-data
@@ -106,16 +106,6 @@
         <activity
             android:name=".User.MyLocation"
             android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".User.ProfileActivity"
-            android:exported="true"
-            android:parentActivityName=".User.items">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
