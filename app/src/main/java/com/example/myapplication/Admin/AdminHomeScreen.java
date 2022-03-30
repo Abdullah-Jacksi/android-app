@@ -55,6 +55,7 @@ public class AdminHomeScreen extends AppCompatActivity implements AdapterView.On
 //    ArrayList<String> statusListRadioGroup = new ArrayList<String>();
     String radioButton ;
     int index = 0;
+    String globleOrderNumber = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,6 +142,7 @@ public class AdminHomeScreen extends AppCompatActivity implements AdapterView.On
                                 order.getStatus()
                         };
 
+                        globleOrderNumber = String.valueOf(mapObject.get("totalOrderNumber"));
                         orderDetails.add("Order Number is : " + order.getOrderNumber() +  "\nThe order status is : " + order.getStatus() );
                         statusList.add(order.getStatus());
                         orderNumberList.add(order.getOrderNumber());
@@ -181,7 +183,7 @@ public class AdminHomeScreen extends AppCompatActivity implements AdapterView.On
         radioButton = statusList.get(itemIndex);
 //         index = statusListRadioGroup.indexOf(statusList.get(itemIndex));
 
-            Toast.makeText(AdminHomeScreen.this, String.valueOf(index) + "  " +radioButton, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(AdminHomeScreen.this, String.valueOf(index) + "  " +radioButton, Toast.LENGTH_SHORT).show();
 
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -203,6 +205,10 @@ public class AdminHomeScreen extends AppCompatActivity implements AdapterView.On
                  orderDetails.set(itemIndex , "Order Number is : " + orderNumberList.get(itemIndex) +  "\nThe order status is : " + radioButton);
 
                  ordersListAdapter.notifyDataSetChanged();
+                Log.d("qwe" , "111");
+
+                updateUserOrderStatus (orderNumberList.get(itemIndex)  , radioButton);
+
                 updateStatus(orderNumberList.get(itemIndex) , radioButton);
 //             }
             }
@@ -224,7 +230,7 @@ public class AdminHomeScreen extends AppCompatActivity implements AdapterView.On
                     HashMap<String, Object> orderNumberMap = new HashMap<>();
                     orderNumberMap.put("status", newStatus);
 
-//                Toast.makeText(AdminHomeScreen.this, orderNumber, Toast.LENGTH_SHORT).show();
+
 
                     RootRef.child("AllOrders").child(orderNumber).updateChildren(orderNumberMap)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -247,5 +253,74 @@ public class AdminHomeScreen extends AppCompatActivity implements AdapterView.On
             }
         });
 
+    }
+
+    void updateUserOrderStatus (String orderNumber , String newStatus){
+        final DatabaseReference RootRef;
+        RootRef = FirebaseDatabase.getInstance().getReference();
+        RootRef.child("Users").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+            {
+                boolean hasSame = false;
+                for(DataSnapshot ds : dataSnapshot.getChildren()) {
+
+                    String k = ds.getKey();
+                    Log.d("qwe" , "k is " + k);
+
+                    for(DataSnapshot ds2 : ds.child("Orders").getChildren()) {
+
+                        Map<String,Object> mapObject =(HashMap<String, Object>)ds2.getValue();
+                        String s = String.valueOf(mapObject.get("globleOrderNumber"));
+                        String n = String.valueOf(mapObject.get("orderNumber"));
+
+
+
+                        if(s.equals(orderNumber)){
+
+                            Log.d("qwe" , "globleOrderNumber = " +  globleOrderNumber + " ;;;; orderNumber = " + orderNumber);
+                            Log.d("qwe" , String.valueOf(s.equals(globleOrderNumber)));
+                            Log.d("qwe" , n);
+
+                            HashMap<String, Object> orderNumberMap = new HashMap<>();
+                            orderNumberMap.put("status", newStatus);
+
+
+                            RootRef.child("Users").child(k).child("Orders").child(n).updateChildren(orderNumberMap)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()) {
+                                                Log.d("qwe1" , "qwe1111");
+                                                Toast.makeText(AdminHomeScreen.this, "updated status", Toast.LENGTH_SHORT).show();
+                                            } else {
+                                                Log.d("qwe1" , "qwe1111");
+                                                Toast.makeText(AdminHomeScreen.this, "Network Error:please try again after some time ...", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    });
+
+                            hasSame = true;
+                        }
+                    }
+                    /*
+
+                     */
+//                    if (hasSame)
+//                    {
+//
+//                    }
+//                    else
+//                    {
+//                        Toast.makeText(AdminHomeScreen.this, "Error!", Toast.LENGTH_SHORT).show();
+//                    }
+                    }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }

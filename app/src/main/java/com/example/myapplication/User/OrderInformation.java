@@ -42,6 +42,7 @@ public class OrderInformation extends AppCompatActivity implements AdapterView.O
     SharedPreferences.Editor editor;
 
     String email = "";
+    String userNumber = "-";
 
     private static final String ORDER_NUMBER = "OrderNumber";
     Integer orderNumber = 0;
@@ -106,11 +107,6 @@ public class OrderInformation extends AppCompatActivity implements AdapterView.O
 //                    Toast.makeText(OrderInformation.this, myList.size() + " " + radioValue + " " + myEditText1Text + " " + myEditText2Text, Toast.LENGTH_LONG).show();
 //                    Toast.makeText(OrderInformation.this, locationList.get(0) + " " + locationList.get(1) + " " + locationList.get(2) + " " + locationList.get(3), Toast.LENGTH_LONG).show();
 
-//                myList.add("paper");
-//                myList.add("aluminum");
-//                radioValue = "Amount";
-//                myEditText1Text = "50";
-//                myEditText2Text = "another note";
 
                 Confirmation.setEnabled(false);
 
@@ -130,7 +126,10 @@ public class OrderInformation extends AppCompatActivity implements AdapterView.O
                         progressDialog.show();
 
                         email = getEmailFromCache();
-                        getOrderNumberForUser();
+
+                        userNumber = getUserNumberFromCache();
+                        Toast.makeText(OrderInformation.this, "  this is " + userNumber + "   userNumber", Toast.LENGTH_SHORT).show();
+
                         getOrderNumberForAll();
                     }
                 });
@@ -149,29 +148,29 @@ public class OrderInformation extends AppCompatActivity implements AdapterView.O
     }
 
 
-    void getOrderNumberForUser() {
+    void getOrderNumberForUser(String userNumber , int globleOrderNumber) {
         final DatabaseReference RootRef;
         RootRef = FirebaseDatabase.getInstance().getReference();
-        RootRef.child("Users").child(email).addListenerForSingleValueEvent(new ValueEventListener() {
+        RootRef.child("Users").child(userNumber).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 if (dataSnapshot.hasChild(ORDER_NUMBER) || dataSnapshot.child(ORDER_NUMBER).exists()) {
                     orderNumber = Integer.valueOf(String.valueOf(dataSnapshot.child(ORDER_NUMBER).child(ORDER_NUMBER).getValue()));
 //                    Toast.makeText(OrderInformation.this, String.valueOf(orderNumber+1), Toast.LENGTH_SHORT).show();
-                    setOrderDetailsForUser();
+                    setOrderDetailsForUser(userNumber,globleOrderNumber);
 //                    Confirmation.setEnabled(true);
                 } else {
                     HashMap<String, Object> orderNumberMap = new HashMap<>();
                     orderNumberMap.put(ORDER_NUMBER, 0);
-                    RootRef.child("Users").child(email).child(ORDER_NUMBER).updateChildren(orderNumberMap)
+                    RootRef.child("Users").child(userNumber).child(ORDER_NUMBER).updateChildren(orderNumberMap)
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
 //                                        Confirmation.setEnabled(true);
 //                                        Toast.makeText(OrderInformation.this, "added new OrderNumber", Toast.LENGTH_SHORT).show();
-                                        setOrderDetailsForUser();
+                                        setOrderDetailsForUser(userNumber, globleOrderNumber);
                                     } else {
 
                                         Toast.makeText(OrderInformation.this, "Network Error:please try again after some time ...", Toast.LENGTH_SHORT).show();
@@ -189,7 +188,7 @@ public class OrderInformation extends AppCompatActivity implements AdapterView.O
 
     }
 
-    void setOrderDetailsForUser() {
+    void setOrderDetailsForUser(String userNumber , int globleOrderNumber) {
         final DatabaseReference RootRef;
         RootRef = FirebaseDatabase.getInstance().getReference();
         RootRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -204,15 +203,16 @@ public class OrderInformation extends AppCompatActivity implements AdapterView.O
                 userdataMap.put("myEditText1Text", myEditText1Text);
                 userdataMap.put("myEditText2Text", myEditText2Text);
                 userdataMap.put("status", "قيد الانتظار");
+                userdataMap.put("globleOrderNumber" , globleOrderNumber + 1);
 
 //                String key = RootRef.child("Users").child(email).child("Orders").push().getKey();
-                RootRef.child("Users").child(email).child("Orders").child(String.valueOf(orderNumber + 1)).updateChildren(userdataMap)
+                RootRef.child("Users").child(userNumber).child("Orders").child(String.valueOf(orderNumber + 1)).updateChildren(userdataMap)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                 if (task.isSuccessful()) {
                                     orderNumber += 1;
-                                    updateOrderNumberForUser();
+                                    updateOrderNumberForUser(userNumber);
                                 } else {
                                     Confirmation.setEnabled(true);
                                     Toast.makeText(OrderInformation.this, "Network Error:please try again after some time ...", Toast.LENGTH_SHORT).show();
@@ -228,16 +228,16 @@ public class OrderInformation extends AppCompatActivity implements AdapterView.O
         });
     }
 
-    void updateOrderNumberForUser() {
+    void updateOrderNumberForUser(String userNumber) {
         final DatabaseReference RootRef;
         RootRef = FirebaseDatabase.getInstance().getReference();
-        RootRef.child("Users").child(email).addListenerForSingleValueEvent(new ValueEventListener() {
+        RootRef.child("Users").child(userNumber).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 HashMap<String, Object> orderNumberMap = new HashMap<>();
                 orderNumberMap.put(ORDER_NUMBER, orderNumber);
-                RootRef.child("Users").child(email).child(ORDER_NUMBER).updateChildren(orderNumberMap)
+                RootRef.child("Users").child(userNumber).child(ORDER_NUMBER).updateChildren(orderNumberMap)
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
@@ -265,6 +265,7 @@ public class OrderInformation extends AppCompatActivity implements AdapterView.O
     }
 
 
+
     void getOrderNumberForAll() {
         final DatabaseReference RootRef;
         RootRef = FirebaseDatabase.getInstance().getReference();
@@ -275,6 +276,7 @@ public class OrderInformation extends AppCompatActivity implements AdapterView.O
                 if (dataSnapshot.hasChild(TOTAL_ORDER_NUMBER) || dataSnapshot.child(TOTAL_ORDER_NUMBER).exists()) {
                     totalOrderNumber = Integer.valueOf(String.valueOf(dataSnapshot.child(TOTAL_ORDER_NUMBER).child(TOTAL_ORDER_NUMBER).getValue()));
 //                    Toast.makeText(OrderInformation.this, String.valueOf(totalOrderNumber+1), Toast.LENGTH_SHORT).show();
+                    getOrderNumberForUser(userNumber, totalOrderNumber);
                     setOrderDetailsForAll();
 //                    Confirmation.setEnabled(true);
                 } else {
@@ -287,6 +289,7 @@ public class OrderInformation extends AppCompatActivity implements AdapterView.O
                                     if (task.isSuccessful()) {
 //                                        Confirmation.setEnabled(true);
 //                                        Toast.makeText(OrderInformation.this, "added new OrderNumber", Toast.LENGTH_SHORT).show();
+                                        getOrderNumberForUser(userNumber, totalOrderNumber);
                                         setOrderDetailsForAll();
                                     } else {
 
@@ -393,6 +396,10 @@ public class OrderInformation extends AppCompatActivity implements AdapterView.O
         Toast.makeText(OrderInformation.this, String.valueOf(orderNumber), Toast.LENGTH_SHORT).show();
     }
 
+    String getUserNumberFromCache (){
+        sharedpreferences = getSharedPreferences("new", 0);
+        return sharedpreferences.getString("userNumber2", "");
+    }
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {

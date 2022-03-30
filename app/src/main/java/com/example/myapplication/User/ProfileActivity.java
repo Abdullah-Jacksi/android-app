@@ -22,7 +22,7 @@ public class ProfileActivity extends AppCompatActivity {
     TextView userE, userPh, userPass, userUs;
 
     SharedPreferences sharedpreferences;
-    String email = "";
+    String userNumber = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,8 +39,9 @@ public class ProfileActivity extends AppCompatActivity {
         userUs.setText("getting data now !!!");
         userPass.setText("getting data now !!!");
 
-        email = getEmailFromCache ();
-        getProfileDate(email);
+//        email = getEmailFromCache ();
+        userNumber = getUserNumberFromCache ();
+        getProfileDate(userNumber);
 
         back = findViewById(R.id.back);
         back.setOnClickListener(new View.OnClickListener() {
@@ -56,17 +57,22 @@ public class ProfileActivity extends AppCompatActivity {
         return sharedpreferences.getString("logged_in", "");
     }
 
-    void getProfileDate (String email){
+    String getUserNumberFromCache (){
+        sharedpreferences = getSharedPreferences("new", 0);
+        return sharedpreferences.getString("userNumber2", "");
+    }
+
+    void getProfileDate (String userNumber){
         final DatabaseReference RootRef;
         RootRef = FirebaseDatabase.getInstance().getReference();
         RootRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 //                dataSnapshot.child("Users").child(email).child("Em").getValue();
-                userE.setText(String.valueOf(dataSnapshot.child("Users").child(email).child("Em").getValue()));
-                userPh.setText(String.valueOf(dataSnapshot.child("Users").child(email).child("Ph").getValue()));
-                userUs.setText(String.valueOf(dataSnapshot.child("Users").child(email).child("user").getValue()));
-                userPass.setText(String.valueOf(dataSnapshot.child("Users").child(email).child("Pass").getValue()));
+                userE.setText(String.valueOf(dataSnapshot.child("Users").child(userNumber).child("Em").getValue()));
+                userPh.setText(String.valueOf(dataSnapshot.child("Users").child(userNumber).child("Ph").getValue()));
+                userUs.setText(String.valueOf(dataSnapshot.child("Users").child(userNumber).child("user").getValue()));
+                userPass.setText(String.valueOf(dataSnapshot.child("Users").child(userNumber).child("Pass").getValue()));
             }
 
             @Override

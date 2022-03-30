@@ -32,7 +32,7 @@ import java.util.Map;
 public class OrdersHistory extends AppCompatActivity {
 
     SharedPreferences sharedpreferences;
-    String email  = "";
+    String  userNumber = "";
 
     ArrayList<String> myList, locationList;
     String radioValue, myEditText1Text, myEditText2Text, orderNumber, status;
@@ -60,7 +60,8 @@ public class OrdersHistory extends AppCompatActivity {
         progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progressDialog.show();
 //
-        email = getEmailFromCache ();
+//        email = getEmailFromCache ();
+        userNumber = getUserNumberFromCache ();
 
         getOrdersOfUser();
 
@@ -80,11 +81,15 @@ public class OrdersHistory extends AppCompatActivity {
         return sharedpreferences.getString("logged_in", "");
     }
 
+    String getUserNumberFromCache (){
+        sharedpreferences = getSharedPreferences("new", 0);
+        return sharedpreferences.getString("userNumber2", "");
+    }
 
     void getOrdersOfUser() {
         final DatabaseReference RootRef;
         RootRef = FirebaseDatabase.getInstance().getReference();
-        RootRef.child("Users").child(email).child("Orders").addListenerForSingleValueEvent(new ValueEventListener() {
+        RootRef.child("Users").child(userNumber).child("Orders").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
