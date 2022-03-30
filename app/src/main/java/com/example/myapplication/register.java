@@ -27,6 +27,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class register extends AppCompatActivity {
     private EditText Username, Email, Password, Repassword, PhoneNumber;
@@ -108,6 +109,10 @@ public class register extends AppCompatActivity {
         editor.commit();
     }
 
+    boolean isEmailValid(CharSequence email) {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+
     //TODO: for user
     void getOrderNumberForUser() {
 
@@ -161,17 +166,44 @@ public class register extends AppCompatActivity {
         String repass = Repassword.getText().toString();
         String em = Email.getText().toString();
         String ph = PhoneNumber.getText().toString();
-        if (TextUtils.isEmpty(user)) {
-            Toast.makeText(register.this, "Please write your username", Toast.LENGTH_SHORT).show();
-        } else if (TextUtils.isEmpty(em)) {
-            Toast.makeText(register.this, "Please write your email", Toast.LENGTH_SHORT).show();
-        } else if (TextUtils.isEmpty(pass)) {
-            Toast.makeText(register.this, "Please write your password", Toast.LENGTH_SHORT).show();
-        } else if (TextUtils.isEmpty(repass)) {
-            Toast.makeText(register.this, "Please write your repassword", Toast.LENGTH_SHORT).show();
-        } else if (TextUtils.isEmpty(ph)) {
-            Toast.makeText(register.this, "Please write your phoneNumber", Toast.LENGTH_SHORT).show();
-        } else {
+
+        Pattern letter = Pattern.compile("[a-z]");
+        Pattern letterC = Pattern.compile("[A-Z]");
+        Pattern digit = Pattern.compile("[0-9]");
+
+        if (!isEmailValid(em)){
+            Toast.makeText(register.this, "Your Email is Invalid", Toast.LENGTH_SHORT).show();
+            loadingBar.dismiss();
+        }
+        else if((!letter.matcher(pass).find()) || (!digit.matcher(pass).find()) || (!letterC.matcher(pass).find())){
+            Toast.makeText(register.this, "Your Password Should has digits and letters and at least one capital letter", Toast.LENGTH_SHORT).show();
+            loadingBar.dismiss();
+        }
+        else if (ph.length() != 10){
+            Toast.makeText(register.this, "Your Phone Number Should be 10 Numbers", Toast.LENGTH_SHORT).show();
+            loadingBar.dismiss();
+        }
+        else if (TextUtils.isEmpty(user) || TextUtils.isEmpty(em)|| TextUtils.isEmpty(pass) || TextUtils.isEmpty(repass) || TextUtils.isEmpty(ph) ) {
+            Toast.makeText(register.this, "Please Fill All Fields", Toast.LENGTH_SHORT).show();
+            loadingBar.dismiss();
+        }
+//        else if (TextUtils.isEmpty(user) || TextUtils.isEmpty(em)|| TextUtils.isEmpty(pass) || TextUtils.isEmpty(repass) || TextUtils.isEmpty(ph) ) {
+//            Toast.makeText(register.this, "Please write your username", Toast.LENGTH_SHORT).show();
+//            loadingBar.dismiss();
+//        } else if (TextUtils.isEmpty(em)) {
+//            Toast.makeText(register.this, "Please write your email", Toast.LENGTH_SHORT).show();
+//            loadingBar.dismiss();
+//        } else if (TextUtils.isEmpty(pass)) {
+//            Toast.makeText(register.this, "Please write your password", Toast.LENGTH_SHORT).show();
+//            loadingBar.dismiss();
+//        } else if (TextUtils.isEmpty(repass)) {
+//            Toast.makeText(register.this, "Please write your repassword", Toast.LENGTH_SHORT).show();
+//            loadingBar.dismiss();
+//        } else if (TextUtils.isEmpty(ph)) {
+//            Toast.makeText(register.this, "Please write your phoneNumber", Toast.LENGTH_SHORT).show();
+//            loadingBar.dismiss();
+//        }
+        else {
             ValidateEmailForUser(user, pass, em, ph);
         }
     }
